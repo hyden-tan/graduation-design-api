@@ -11,4 +11,5 @@
 
 use think\Route;
 
-Route::get('test', 'index/Index/test');
+// 用户登录、注册
+Route::post('user', 'index/Index/userLogin');
