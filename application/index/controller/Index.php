@@ -3,6 +3,7 @@ namespace app\index\controller;
 use think\Session;
 use think\Db;
 use app\index\model\User;
+use think\Log;
 
 function json($str) {
     return json_encode($str, JSON_UNESCAPED_UNICODE);
@@ -44,5 +45,27 @@ class Index
         } catch(Exception $e) {
             return json([ 'code' => 2, 'message' => $e->message]);
         }
+    }
+
+    public function runCode() {
+        $data = json_decode(file_get_contents('php://input'));
+        shell_exec('rm ./code');
+        shell_exec('rm ./code.c');
+        shell_exec('rm ./code.o');
+    
+        try {
+            $codeFile = fopen("code.c", "w");
+            fwrite( $codeFile, $data->code);
+        } catch(Exception $e) {
+            return json([ 'code' => 1, 'errMsg' => '服务器端异常！']);
+        }
+
+        shell_exec('gcc -c code.c');
+        shell_exec('gcc code.o -o code');
+        $result = shell_exec('./code');
+        if ($result) {
+            return json([ 'code' => 0, 'result' => $result]);
+        }
+
     }
 }

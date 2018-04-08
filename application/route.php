@@ -13,3 +13,4 @@ use think\Route;
 
 // 用户登录、注册
 Route::post('user', 'index/Index/userLogin');
+Route::post('run', 'index/Index/runCode');
