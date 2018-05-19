@@ -5,6 +5,7 @@ use think\Db;
 use app\index\model\User;
 use app\index\model\Questions;
 use app\index\model\PracticeData;
+use app\index\model\StudyData;
 use think\Log;
 
 function json($str) {
@@ -129,5 +130,31 @@ class Index
         } catch (Exception $e) {
             return json([ 'code' => 1, 'errMsg' => '服务器端异常！']); 
         }
+    }
+
+    // 记录学习时间
+    public function recordStudyTime($userId, $chapter, $time) {
+       $studyDataModel = new StudyData();
+
+       try {
+           $query = ['user_id'=>$userId, 'chapter'=>$chapter];
+           $cur = $studyDataModel->where($query)->find();
+
+           if ($cur) {
+                $studyDataModel->where($query)->update([
+                    'time_r'=> $cur->time_r + $time
+                ]);
+           } else {
+                $studyDataModel->user_id = $userId;
+                $studyDataModel->time_r = $time;
+                $studyDataModel->chapter = $chapter;
+
+                $studyDataModel->save();
+           }
+
+           return json_encode(([ 'code' => 0 ]));
+       } catch (Exception $e) {
+           return json_encode(([ 'code' => 1, 'errMsg' => '服务器端异常！' ]));
+       }
     }
 }

@@ -16,3 +16,6 @@ Route::get('get_question', 'index/Index/getQuestion');
 
 // 设置完成题目
 Route::get('set_question_done', 'index/Index/setQuestionDone');
+
+// 保存用户学习时间
+Route::get('record_study_time', 'index/Index/recordStudyTime' );
