@@ -52,13 +52,14 @@ class Index
 
     public function runCode() {
         $data = json_decode(file_get_contents('php://input'));
+        $path = "result.txt";
         shell_exec('rm ./code');
         shell_exec('rm ./code.c');
         shell_exec('rm ./code.o');
+        shell_exec('rm ./' . $path);
 
-        Log::record($data);
         $practiceDataModel = new PracticeData();
-
+        
         if ($data->userId !== -1) {
             $query = ['user_id' => $data->userId, 'question_id' => $data->questionId];
             try {
@@ -90,14 +91,25 @@ class Index
             return json([ 'code' => 1, 'errMsg' => '服务器端异常！']);
         }
 
-        $result = shell_exec('gcc -c code.c');
+        exec('gcc -c code.c > result.txt 2>&1 &', $res, $status);
+        sleep(1);
+
+        if(file_exists($path)){  
+            $size = filesize($path);
+            if ($size > 0) {
+                $fileCon = "";  
+                $fp = fopen($path,"r+");  
+                $fileCon = fread($fp,filesize($path)); 
+                fclose($fp); 
+                return json([ 'code' => 0, 'result' => $fileCon]);
+            }
+        }
 
         shell_exec('gcc code.o -o code');
         $result = shell_exec('./code');
         if ($result) {
             return json([ 'code' => 0, 'result' => $result]);
         }
-
     }
 
     // 获取所有题目
