@@ -15,7 +15,19 @@ Route::get('get_questions', 'index/Index/getQuestions');
 Route::get('get_question', 'index/Index/getQuestion');
 
 // 设置完成题目
-Route::get('set_question_done', 'index/Index/setQuestionDone');
+Route::post('set_question_done', 'index/Index/setQuestionDone');
 
 // 保存用户学习时间
 Route::get('record_study_time', 'index/Index/recordStudyTime' );
+
+// 获取用户已完成的考试
+Route::get('get_tests', 'index/Index/getUserTests');
+
+// 组卷
+Route::get('create_test', 'index/Index/createTest');
+
+// 获取考试题目
+Route::get('get_test_questions', 'index/Index/getTestQuestions');
+
+// 获取提交记录
+Route::post('get_code', 'index/Index/getCode');
